@@ -165,6 +165,29 @@ the moment.
 - `withDefaultController: boolean (default true)` add internal controller to expose /metrics endpoints
 - `useHttpCounterMiddleware: boolean (default false)` register http_requests_total counter
 
+### PromModule.forRootAsync()
+
+You can also configure using injected configuration.
+
+```ts
+@Module({
+  imports: [
+    PromModule.forRootAsync({
+      useFactory: (config: ConfigService) => {
+        return {
+          defaultLabels: {
+            app: config.someConfigValueA,
+          },
+          customUrl: config.someConfigValueB,
+        }
+      },
+      inject: [CONFIG_TOKEN]
+    }),
+  ],
+})
+export class MyModule
+```
+
 ## Auth/security
 
 I do not provide any auth/security for `/metrics` endpoints.

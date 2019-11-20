@@ -11,7 +11,7 @@ import {
   Registry,
 } from 'prom-client';
 import { Provider } from "@nestjs/common";
-import { getMetricToken, getRegistryName } from "./common/prom.utils";
+import { getMetricToken, getRegistryToken } from "./common/prom.utils";
 
 export function createPromCounterProvider(
   configuration: CounterConfiguration,
@@ -27,8 +27,7 @@ export function createPromCounterProvider(
       return obj;
     },
     inject: [
-      registryName === DEFAULT_PROM_REGISTRY ?
-        DEFAULT_PROM_REGISTRY : getRegistryName(registryName),
+      getRegistryToken(registryName),
     ],
   };
 }
@@ -47,8 +46,7 @@ export function createPromGaugeProvider(
       return obj;
     },
     inject: [
-      registryName === DEFAULT_PROM_REGISTRY ?
-        DEFAULT_PROM_REGISTRY : getRegistryName(registryName),
+      getRegistryToken(registryName),
     ],
   };
 }
@@ -67,8 +65,7 @@ export function createPromHistogramProvider(
       return obj;
     },
     inject: [
-      registryName === DEFAULT_PROM_REGISTRY ?
-        DEFAULT_PROM_REGISTRY : getRegistryName(registryName),
+      getRegistryToken(registryName),
     ],
   };
 }
@@ -87,8 +84,7 @@ export function createPromSummaryProvider(
       return obj;
     },
     inject: [
-      registryName === DEFAULT_PROM_REGISTRY ?
-        DEFAULT_PROM_REGISTRY : getRegistryName(registryName),
+      getRegistryToken(registryName),
     ],
   };
 }

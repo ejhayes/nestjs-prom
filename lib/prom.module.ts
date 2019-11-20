@@ -1,54 +1,29 @@
 import { Module, DynamicModule } from '@nestjs/common';
 import { PromCoreModule } from './prom-core.module';
-import { PromModuleOptions, MetricType, MetricTypeConfigurationInterface } from './interfaces';
+import { PromModuleOptions, PromModuleAsyncOptions, MetricType, MetricTypeConfigurationInterface } from './interfaces';
 import { createPromCounterProvider, createPromGaugeProvider, createPromHistogramProvider, createPromSummaryProvider } from './prom.providers';
 import * as client from 'prom-client';
-import { PromController } from './prom.controller';
-import { PromService } from './prom.service';
 
 @Module({})
 export class PromModule {
 
+  static forRootAsync(
+    options: PromModuleAsyncOptions): DynamicModule {
+    return {
+      module: PromModule,
+      imports: [PromCoreModule.forRootAsync(options)],
+      exports: [PromCoreModule],
+    };
+  }
+
   static forRoot(
     options: PromModuleOptions = {},
   ): DynamicModule {
-
-    const {
-      withDefaultController,
-      useHttpCounterMiddleware,
-      ...promOptions
-    } = options;
-
-    const moduleForRoot: DynamicModule = {
+    return {
       module: PromModule,
       imports: [PromCoreModule.forRoot(options)],
-      controllers: [],
-      exports: [
-        PromService,
-      ],
-      providers: [
-        PromService,
-      ],
+      exports: [PromCoreModule],
     };
-
-    // default push default controller
-    if (withDefaultController !== false) {
-      moduleForRoot.controllers = [...moduleForRoot.controllers, PromController.forRoot(options.customUrl || 'metrics')];
-    }
-
-    // if want to use the http counter
-    if (useHttpCounterMiddleware) {
-      const inboundProvider = createPromCounterProvider({
-        name: 'http_requests_total',
-        help: 'http_requests_total Number of inbound request',
-        labelNames: ['method', 'status', 'path']
-      });
-
-      moduleForRoot.providers = [...moduleForRoot.providers , inboundProvider];
-      moduleForRoot.exports = [...moduleForRoot.exports, inboundProvider];
-    }
-
-    return moduleForRoot;
   }
 
   static forMetrics(

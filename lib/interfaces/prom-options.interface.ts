@@ -1,3 +1,4 @@
+import { ModuleMetadata, Type } from "@nestjs/common/interfaces";
 
 export interface PromModuleOptions {
   [key: string]: any;
@@ -27,4 +28,18 @@ export interface PromModuleOptions {
   };
 
   customUrl?: string;
+}
+
+export interface PromModuleOptionsFactory {
+  createPromModuleOptions(name?: string): Promise<PromModuleOptions> | PromModuleOptions;
+}
+
+export interface PromModuleAsyncOptions extends Pick<ModuleMetadata, 'imports'> {
+  name?: string;
+  useExisting?: Type<PromModuleOptions>;
+  useClass?: Type<PromModuleOptions>;
+  useFactory?: (
+    ...args: any[]
+  ) => Promise<PromModuleOptions> | PromModuleOptions;
+  inject?: any[]
 }

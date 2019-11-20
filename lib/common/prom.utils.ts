@@ -1,15 +1,27 @@
 
 import * as client from 'prom-client';
+import {DEFAULT_PROM_REGISTRY} from '../prom.constants';
 
 export function getMetricToken(type: string, name: string) {
   return `${name}${type}`;
 }
 
-export function getRegistryName(name: string) {
+export function getRegistryToken(
+  name: string = DEFAULT_PROM_REGISTRY,
+): string {
+  
+  if (name === DEFAULT_PROM_REGISTRY) {
+    return name;
+  }
+
   return `${name}PromRegistry`;
 }
 
-export function getOptionsName(name: string) {
+export function getRegistryName(name: string = '') {
+  return `${name}PromRegistry`;
+}
+
+export function getOptionsName(name: string = '') {
   return `${name}PromOptions`;
 }
 
